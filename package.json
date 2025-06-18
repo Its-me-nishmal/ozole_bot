@@ -6,9 +6,7 @@
   "scripts": {
     "test": "jest --watchAll --verbose",
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "neon build",
-    "install": "neon install"
+    "dev": "nodemon server.js"
   },
   "keywords": [
     "whatsapp",
