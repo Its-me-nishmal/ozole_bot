@@ -1,0 +1,46 @@
+{
+  "name": "ozole-ai-server",
+  "version": "1.0.0",
+  "description": "Node.js backend for WhatsApp automation and AI-powered conversations",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest --watchAll --verbose",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "neon build",
+    "install": "neon install"
+  },
+  "keywords": [
+    "whatsapp",
+    "automation",
+    "ai",
+    "nodejs",
+    "gemini"
+  ],
+  "author": "Roo",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.10.0",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.30.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.1",
+    "jest": "^30.0.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
+    "supertest": "^7.1.1"
+  }
+}
