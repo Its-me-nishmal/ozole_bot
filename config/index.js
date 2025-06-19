@@ -9,6 +9,7 @@ module.exports = {
   },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
-    systemPrompt: process.env.GEMINI_SYSTEM_PROMPT || 'You are a helpful AI assistant.'
+    systemPrompt: process.env.GEMINI_SYSTEM_PROMPT || 'You are a helpful AI assistant.',
+    voicePrompt:process.env.GEMINI_VOICE_PROMPT
   }
 };

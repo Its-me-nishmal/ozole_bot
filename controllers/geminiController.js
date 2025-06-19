@@ -2,9 +2,9 @@ const geminiAdapter = require('../adapters/geminiAdapter');
 const config = require('../config/gemini');
 const historyService = require('../services/historyService');
 
-async function generateGeminiResponse(sender, prompt) {
+async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
-    const systemPrompt = config.systemPrompt;
+    const systemPrompt = voiceMode == false ? config.systemPrompt : config.voicePrompt ;
     let chatHistory = await historyService.getChatHistory(sender);
 
     // Clear chat history if no message in last 10 minutes
@@ -32,11 +32,11 @@ async function generateGeminiResponse(sender, prompt) {
 }
 
 async function getGeminiResponse(req, res) {
-  const { prompt, number } = req.query;
+  const { prompt, number, voiceMode } = req.query;
   let sender = number || `temp_${Math.random().toString(36).substring(2, 15)}`;
 
   try {
-    const response = await generateGeminiResponse(sender, prompt);
+    const response = await generateGeminiResponse(sender, prompt, voiceMode);
     res.json({response});
   } catch (error) {
     console.error('Error generating Gemini response:', error);
