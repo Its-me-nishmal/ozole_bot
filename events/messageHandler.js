@@ -2,7 +2,7 @@ const { connectToWhatsApp } = require('../adapters/whatsappAdapter');
 const geminiService = require('../services/geminiService');
 const historyService = require('../services/historyService');
 const ttsService = require('../services/ttsService');
-const sttService = require('../services/sttService').default;
+const sttService = require('../services/sttService');
 
 async function messageHandler() {
   try {

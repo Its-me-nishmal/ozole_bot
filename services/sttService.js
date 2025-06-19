@@ -1,6 +1,10 @@
-import stt from 'speech-to-text';
-import axios from 'axios';
-import { createWriteStream } from 'fs';
+(async () => {
+  const { default: stt } = await import('speech-to-text');
+
+  // Now you can use `stt` here
+})();
+const axios = require('axios');
+const fs = require('fs');
 
 async function transcribeAudio(audioLink) {
   // STT (Speech-to-Text) functionality using speech-to-text
@@ -15,7 +19,7 @@ async function transcribeAudio(audioLink) {
     });
 
     const audioFile = 'audio.ogg';
-    const writer = createWriteStream(audioFile);
+    const writer = fs.createWriteStream(audioFile);
 
     response.data.pipe(writer);
 
@@ -28,7 +32,7 @@ async function transcribeAudio(audioLink) {
         }
 
         // Transcribe the audio file
-        recognize(audioFile, options, function (err, text) {
+        stt.recognize(audioFile, options, function (err, text) {
           if (err) {
             console.error("STT error:", err);
             reject(err);
@@ -50,4 +54,4 @@ async function transcribeAudio(audioLink) {
   }
 }
 
-export default { transcribeAudio };
+module.exports = { transcribeAudio };
