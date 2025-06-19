@@ -4,7 +4,9 @@ const historyService = require('../services/historyService');
 
 async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
-    const systemPrompt = voiceMode == false ? config.systemPrompt : config.voicePrompt ;
+    const isVoiceMode = voiceMode === 'true';
+const systemPrompt = isVoiceMode ? config.voicePrompt : config.systemPrompt;
+console.log(systemPrompt)
     let chatHistory = await historyService.getChatHistory(sender);
 
     // Clear chat history if no message in last 10 minutes
