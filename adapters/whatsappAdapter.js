@@ -25,6 +25,14 @@ client.on('ready', () => {
 //   console.log(msg)
 // })
 
+client.on('auth_failure', msg => {
+    console.error('AUTH FAILURE:', msg);
+});
+
+client.on('disconnected', reason => {
+    console.log('Client was logged out:', reason);
+});
+
 async function connectToWhatsApp() {
     console.log('called fn')
     client.initialize();
