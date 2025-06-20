@@ -10,7 +10,10 @@ const client = new Client({
     }
 });
 
+console.log('here...')
+
 client.on('qr', qr => {
+    console.log('generating..qr')
     qrcode.generate(qr, {small: true});
 });
 
@@ -23,6 +26,7 @@ client.on('ready', () => {
 // })
 
 async function connectToWhatsApp() {
+    console.log('called fn')
     client.initialize();
     return client;
 }
