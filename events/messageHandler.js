@@ -14,16 +14,14 @@ async function messageHandler() {
       let incomingText = message.body || '';
       let responseMessage = null;
 
-      // 🎤 Handle voice message
+      // 🎤 Voice message handling
       if (message.hasMedia && message.type === 'ptt') {
-
         try {
           const transcribedText = await transcribeEncryptedAudio(message, 'voice.ogg');
-          console.log(transcribedText)
-          // Gemini AI Response
+          console.log('🎤 Transcribed:', transcribedText);
+
           const geminiResponse = await geminiService.generateResponse(sender, transcribedText, 'voice');
 
-          // TTS voice generation (assumes output saved to ./output.wav)
           const buffer = await ttsService.generateVoiceBuffer(geminiResponse);
           const base64Audio = buffer.toString('base64');
           const voiceMedia = new MessageMedia('audio/mpeg', base64Audio, 'response.mp3');
@@ -31,31 +29,29 @@ async function messageHandler() {
           await whatsappClient.sendMessage(sender, voiceMedia);
           await historyService.saveChatHistory(sender, transcribedText, geminiResponse);
         } catch (err) {
-          console.error('❌ Error processing voice message:', err);
-          await whatsappClient.sendMessage(sender, { text: '❌ Failed to process voice message.' });
+          console.error('❌ Voice message processing error:', err);
+          await whatsappClient.sendMessage(sender, { text: '❌ Failed to process your voice message.' });
         }
-
         return;
       }
 
-      // 💬 Handle text commands
-      // if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
-      console.log(incomingText)
-
+      // 💬 Text message handling
       try {
-        const whatsappClient = await connectToWhatsApp();
-        const geminiResponse = await geminiService.generateResponse(sender, incomingText);
+        console.log('💬 Incoming Text:', incomingText);
+
+        const geminiResponse = await geminiService.generateResponse(sender, incomingText, 'text');
         responseMessage = { text: geminiResponse };
-        console.log(responseMessage)
+
         await whatsappClient.sendMessage(sender, responseMessage);
         await historyService.saveChatHistory(sender, incomingText, geminiResponse);
       } catch (error) {
-        console.error('Gemini text handling error:', error);
+        console.error('❌ Text handling error:', error);
+        await whatsappClient.sendMessage(sender, { text: '❌ Sorry, something went wrong processing your message.' });
       }
     });
 
   } catch (error) {
-    console.error('❌ Error setting up message handler:', error);
+    console.error('❌ Error initializing WhatsApp client:', error);
   }
 }
 
