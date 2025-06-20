@@ -4,8 +4,7 @@ const historyService = require('../services/historyService');
 
 async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
-    const isVoiceMode = voiceMode === 'true';
-const systemPrompt = isVoiceMode ? config.voicePrompt : config.systemPrompt;
+ const systemPrompt = voiceMode ? config.voicePrompt : config.systemPrompt;
 console.log(systemPrompt)
     let chatHistory = await historyService.getChatHistory(sender);
 
@@ -34,7 +33,8 @@ console.log(systemPrompt)
 }
 
 async function getGeminiResponse(req, res) {
-  const { prompt, number, voiceMode } = req.query;
+  const { prompt, number } = req.query;
+  const voiceMode = req.query.voiceMode === 'true';
   let sender = number || `temp_${Math.random().toString(36).substring(2, 15)}`;
 
   try {

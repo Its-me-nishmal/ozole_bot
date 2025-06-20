@@ -1,21 +1,15 @@
 const gTTS = require('gtts');
+const concat = require('concat-stream');
 
-async function generateVoice(text) {
-  // TTS (Text-to-Speech) functionality using gTTS
-  console.log('Generating voice from text:', text);
+async function generateVoiceBuffer(text) {
   return new Promise((resolve, reject) => {
     const gtts = new gTTS(text, 'en');
-    const fileName = 'output.wav'; // You might want to generate unique file names
-    gtts.save(fileName, function(err, result) {
-      if (err) {
-        console.error("TTS error:", err);
-        reject(err);
-        return;
-      }
-      console.log("TTS saved to:", fileName);
-      resolve(fileName); // Resolve with the file name
-    });
+    const bufferStream = concat((data) => resolve(data));
+
+    gtts.stream()
+      .on('error', (err) => reject(err))
+      .pipe(bufferStream);
   });
 }
 
-module.exports = { generateVoice };
+module.exports = { generateVoiceBuffer };

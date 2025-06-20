@@ -2,51 +2,59 @@ const { connectToWhatsApp } = require('../adapters/whatsappAdapter');
 const geminiService = require('../services/geminiService');
 const historyService = require('../services/historyService');
 const ttsService = require('../services/ttsService');
-const sttService = require('../services/sttService');
+const { transcribeEncryptedAudio } = require('../services/sttService');
+const { MessageMedia } = require('whatsapp-web.js');
 
 async function messageHandler() {
   try {
     const whatsappClient = await connectToWhatsApp();
 
-    whatsappClient.on('message_create', async message => {
+    whatsappClient.on('message_create', async (message) => {
       const sender = message.from;
-      const text = message.body;
-
-      
-
-      if(!text.startsWith('.')) return;
-
-      let geminiResponse = null;
+      let incomingText = message.body || '';
       let responseMessage = null;
 
-      if (message.type === 'ptt') {
-        console.log('here')
-        // STT (Speech-to-Text)
-        const transcribedText = await sttService.transcribeAudio(message._data.deprecatedMms3Url);
-        console.log('Transcribed text:', transcribedText);
-        text = transcribedText;
+      // 🎤 Handle voice message
+      if (message.hasMedia && message.type === 'ptt') {
 
-        // Get Gemini response
-        geminiResponse = await geminiService.generateResponse(sender, text);
+        try {
+          const transcribedText = await transcribeEncryptedAudio(message, 'voice.ogg');
+          console.log(transcribedText)
+          // Gemini AI Response
+          const geminiResponse = await geminiService.generateResponse(sender, transcribedText, 'voice');
 
-        // TTS (Text-to-Speech)
-        const voiceResponse = await ttsService.generateVoice(geminiResponse);
-        console.log('Voice response generated');
-        responseMessage = { audio: voiceResponse, mimetype: 'audio/ogg; codecs=opus' };
-      } else {
-        // Get Gemini response
-        geminiResponse = await geminiService.generateResponse(sender, text);
-        responseMessage = geminiResponse;
+          // TTS voice generation (assumes output saved to ./output.wav)
+          const buffer = await ttsService.generateVoiceBuffer(geminiResponse);
+          const base64Audio = buffer.toString('base64');
+          const voiceMedia = new MessageMedia('audio/mpeg', base64Audio, 'response.mp3');
+
+          await whatsappClient.sendMessage(sender, voiceMedia);
+          await historyService.saveChatHistory(sender, transcribedText, geminiResponse);
+        } catch (err) {
+          console.error('❌ Error processing voice message:', err);
+          await whatsappClient.sendMessage(sender, { text: '❌ Failed to process voice message.' });
+        }
+
+        return;
       }
 
-      // Send WhatsApp message
-      whatsappClient.sendMessage(sender, responseMessage);
+      // 💬 Handle text commands
+      // if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
+      console.log(incomingText)
 
-      // Save chat history
-      await historyService.saveChatHistory(sender, text, geminiResponse);
+      try {
+        const geminiResponse = await geminiService.generateResponse(sender, incomingText);
+        responseMessage = { text: geminiResponse };
+
+        await whatsappClient.sendMessage(sender, responseMessage);
+        await historyService.saveChatHistory(sender, incomingText, geminiResponse);
+      } catch (error) {
+        console.error('Gemini text handling error:', error);
+      }
     });
+
   } catch (error) {
-    console.error('Error handling message:', error);
+    console.error('❌ Error setting up message handler:', error);
   }
 }
 
