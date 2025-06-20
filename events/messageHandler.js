@@ -39,13 +39,14 @@ async function messageHandler() {
       }
 
       // 💬 Handle text commands
-      if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
+      // if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
       console.log(incomingText)
 
       try {
+        const whatsappClient = await connectToWhatsApp();
         const geminiResponse = await geminiService.generateResponse(sender, incomingText);
         responseMessage = { text: geminiResponse };
-
+        console.log(responseMessage)
         await whatsappClient.sendMessage(sender, responseMessage);
         await historyService.saveChatHistory(sender, incomingText, geminiResponse);
       } catch (error) {
