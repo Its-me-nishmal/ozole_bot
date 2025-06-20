@@ -9,7 +9,7 @@ async function messageHandler() {
   try {
     const whatsappClient = await connectToWhatsApp();
 
-    whatsappClient.on('message_create', async (message) => {
+    whatsappClient.on('message', async (message) => {
       const sender = message.from;
       let incomingText = message.body || '';
       let responseMessage = null;
@@ -39,7 +39,7 @@ async function messageHandler() {
       }
 
       // 💬 Handle text commands
-      // if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
+      if (typeof incomingText !== 'string' || !incomingText.startsWith('.')) return;
       console.log(incomingText)
 
       try {
