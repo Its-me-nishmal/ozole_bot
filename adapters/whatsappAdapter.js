@@ -1,42 +1,41 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
 
+// Optional: use remote WA version to avoid Puppeteer issues
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
-        // executablePath: '/snap/bin/chromium',
-        executablePath: '/usr/bin/chromium-browser',
+        // executablePath: '/usr/bin/chromium-browser', // or remove if Puppeteer manages it
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });
 
-console.log('here...')
-
-client.on('qr', qr => {
-    console.log('generating..qr')
-    qrcode.generate(qr, {small: true});
-});
-
 client.on('ready', () => {
-    console.log('Client is ready!');
+    console.log('✅ Client is ready!');
 });
 
-// client.on('message_create', (msg) => {
-//   console.log(msg)
-// })
+client.on('authenticated', () => {
+    console.log('✅ Authenticated!');
+});
 
 client.on('auth_failure', msg => {
-    console.error('AUTH FAILURE:', msg);
+    console.error('❌ AUTH FAILURE:', msg);
 });
 
 client.on('disconnected', reason => {
-    console.log('Client was logged out:', reason);
+    console.log('❌ Client was logged out:', reason);
 });
 
 async function connectToWhatsApp() {
-    console.log('called fn')
-    client.initialize();
+    console.log('🟡 Initializing...');
+    try {
+        await client.initialize();
+        const code = await client.requestPairingCode("917306007066"); // Replace with your number
+        console.log(`📱 Pairing Code (enter this in WhatsApp Mobile > Linked Devices): ${code}`);
+    } catch (err) {
+        console.error('❌ Error during initialization or pairing:', err);
+    }
+
     return client;
 }
 
