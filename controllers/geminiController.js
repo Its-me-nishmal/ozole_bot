@@ -8,11 +8,7 @@ async function generateGeminiResponse(sender, prompt, voiceMode) {
 console.log(systemPrompt)
     let chatHistory = await historyService.getChatHistory(sender, voiceMode ? 'voice' : 'text');
 
-    // Clear chat history if no message in last 10 minutes
-    chatHistory = chatHistory.filter(item => {
-      const timeDiff = new Date() - new Date(item.timestamp);
-      return timeDiff < 10 * 60 * 1000; // 10 minutes
-    });
+   
 
     // Format chat history for Gemini
     let formattedHistory = chatHistory.map(item => `User: ${item.message}\nAI: ${item.response}`).join('\n');
