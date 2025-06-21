@@ -4,7 +4,7 @@ const historyService = require('./historyService');
 
 async function generateResponse(sender, prompt, context='text') {
   try {
-    const systemPrompt = context == 'voice' ? config.voicePrompt : config.textPrompt;
+    const systemPrompt = context == 'voice' ? config.voicePrompt : config.systemPrompt;
     console.log(context)
     let chatHistory = await historyService.getChatHistory(sender, context);
 

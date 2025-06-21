@@ -3,7 +3,7 @@ const concat = require('concat-stream');
 
 async function generateVoiceBuffer(text) {
   return new Promise((resolve, reject) => {
-    const gtts = new gTTS(text, 'en');
+    const gtts = new gTTS(text, 'en-in');
     const bufferStream = concat((data) => resolve(data));
 
     gtts.stream()
