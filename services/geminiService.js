@@ -13,7 +13,7 @@ async function generateResponse(sender, prompt, context='text') {
 
     const fullPrompt = systemPrompt + '\n' + formattedHistory + '\nUser: ' + prompt;
     const response = await geminiAdapter.generateContent(fullPrompt);
-    return  cleanForTTS(response);
+    return context == 'voice' ? cleanForTTS(response) : response;
   } catch (error) {
     console.error('Error generating Gemini response:', error);
     throw error;
