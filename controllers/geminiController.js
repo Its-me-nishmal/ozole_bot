@@ -6,7 +6,7 @@ async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
  const systemPrompt = voiceMode ? config.voicePrompt : config.systemPrompt;
 console.log(systemPrompt)
-    let chatHistory = await historyService.getChatHistory(sender);
+    let chatHistory = await historyService.getChatHistory(sender, voiceMode ? 'voice' : 'text');
 
     // Clear chat history if no message in last 10 minutes
     chatHistory = chatHistory.filter(item => {
@@ -23,7 +23,7 @@ console.log(systemPrompt)
     console.log(response)
 
     // Save chat history
-    await historyService.saveChatHistory(sender, prompt, response);
+    await historyService.saveChatHistory(sender, prompt, response, voiceMode ? 'voice' : 'text');
 
     return response;
   } catch (error) {
@@ -48,11 +48,12 @@ async function getGeminiResponse(req, res) {
 
 async function postGeminiResponse(req, res) {
   const { prompt, number } = req.body;
+  const voiceMode = req.query.voiceMode === 'true';
   let sender = number || `temp_${Math.random().toString(36).substring(2, 15)}`;
 
   try {
-    const response = await generateGeminiResponse(sender, prompt);
-    res.send(response);
+    const response = await generateGeminiResponse(sender, prompt, voiceMode);
+    res.json({response});
   } catch (error) {
     console.error('Error generating Gemini response:', error);
     res.status(500).send('Error generating response');

@@ -27,7 +27,7 @@ async function messageHandler() {
           const voiceMedia = new MessageMedia('audio/mpeg', base64Audio, 'response.mp3');
 
           await whatsappClient.sendMessage(sender, voiceMedia);
-          await historyService.saveChatHistory(sender, transcribedText, geminiResponse);
+          await historyService.saveChatHistory(sender, transcribedText, geminiResponse,'voice');
         } catch (err) {
           console.error('❌ Voice message processing error:', err);
           await whatsappClient.sendMessage(sender, '❌ Failed to process your voice message.');
@@ -48,7 +48,7 @@ async function messageHandler() {
         console.log('🔮 Gemini Response:', geminiResponse);
 
         await whatsappClient.sendMessage(sender, geminiResponse); // send directly
-        await historyService.saveChatHistory(sender, incomingText, geminiResponse);
+        await historyService.saveChatHistory(sender, incomingText, geminiResponse, 'text');
       } catch (error) {
         console.error('❌ Text handling error:', error);
         await whatsappClient.sendMessage(sender, '❌ Sorry, something went wrong processing your message.');

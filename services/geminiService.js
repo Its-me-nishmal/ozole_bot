@@ -6,7 +6,7 @@ async function generateResponse(sender, prompt, context='text') {
   try {
     const systemPrompt = context == 'voice' ? config.voicePrompt : config.textPrompt;
     console.log(context)
-    let chatHistory = await historyService.getChatHistory(sender);
+    let chatHistory = await historyService.getChatHistory(sender, context);
 
     // Format chat history for Gemini
     let formattedHistory = chatHistory.map(item => `User: ${item.message}\nAI: ${item.response}`).join('\n');
