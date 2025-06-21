@@ -26,7 +26,7 @@ async function messageHandler() {
           const base64Audio = buffer.toString('base64');
           const voiceMedia = new MessageMedia('audio/mpeg', base64Audio, 'response.mp3');
 
-          await whatsappClient.sendMessage(sender, voiceMedia);
+          await whatsappClient.sendMessage(sender, voiceMedia, {sendAudioAsVoice : true, sendSeen: true});
           await historyService.saveChatHistory(sender, transcribedText, geminiResponse,'voice');
         } catch (err) {
           console.error('❌ Voice message processing error:', err);
