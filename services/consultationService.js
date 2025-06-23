@@ -6,8 +6,8 @@ const config = require('../config/gemini');
 async function detectConsultationIntent(prompt) {
   try {
  
-
-    const rawResponse = await geminiAdapter.generateContent(prompt);
+ const fullPrompt = `${config.consultationPrompt}\n\nConversation:\n ${prompt}`;
+    const rawResponse = await geminiAdapter.generateContent(fullPrompt);
     console.log(rawResponse)
     const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
