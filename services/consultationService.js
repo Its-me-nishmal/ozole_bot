@@ -17,3 +17,8 @@ async function detectConsultationIntent(prompt) {
     return null;
   }
 }
+
+
+module.exports = {
+  detectConsultationIntent
+};
