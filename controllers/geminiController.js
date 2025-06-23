@@ -15,7 +15,7 @@ async function generateGeminiResponse(sender, prompt, voiceMode) {
 
     const fullPrompt = systemPrompt + '\\n' + formattedHistory + '\\nUser: ' + prompt;
 
-     const consultation = await detectConsultationIntent(fullPrompt);
+     const consultation = await detectConsultationIntent(fullPrompt, sender);
     if (consultation) {
       console.log("📅 Consultation Detected:", consultation);
 

@@ -33,6 +33,7 @@
     "gtts": "^0.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.6.1",
     "mongoose": "^8.3.1",
     "node-witai-speech": "^1.0.2",
     "qrcode-terminal": "^0.12.0",
