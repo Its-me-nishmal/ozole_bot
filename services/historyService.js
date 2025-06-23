@@ -8,18 +8,10 @@ if (!fs.existsSync(dataFilePath)) {
   fs.writeFileSync(dataFilePath, JSON.stringify({}, null, 2));
 }
 
-/**
- * Save chat history with separate sections for 'text' and 'voice'
- * @param {string} sender - User's phone number
- * @param {string} message - User's message
- * @param {string} response - Bot's response
- * @param {string} type - 'text' or 'voice'
- */
 async function saveChatHistory(sender, message, response, type = 'text') {
   try {
     const chatHistory = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
 
-    // Initialize user entry
     if (!chatHistory[sender]) {
       chatHistory[sender] = { text: [], voice: [] };
     } else {
@@ -34,7 +26,6 @@ async function saveChatHistory(sender, message, response, type = 'text') {
     };
 
     chatHistory[sender][type].push(entry);
-
     fs.writeFileSync(dataFilePath, JSON.stringify(chatHistory, null, 2));
   } catch (error) {
     console.error('❌ Error saving chat history:', error);
@@ -42,12 +33,6 @@ async function saveChatHistory(sender, message, response, type = 'text') {
   }
 }
 
-/**
- * Get chat history for a user by type
- * @param {string} sender - User's phone number
- * @param {string} type - 'text' or 'voice'
- * @returns {Array} - Array of chat entries
- */
 async function getChatHistory(sender, type = 'text') {
   try {
     const chatHistory = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
@@ -58,11 +43,6 @@ async function getChatHistory(sender, type = 'text') {
   }
 }
 
-/**
- * Clear chat history for a user
- * @param {string} sender - User's phone number
- * @param {string|null} type - 'text', 'voice', or null to clear all
- */
 async function clearChatHistory(sender, type = null) {
   try {
     const chatHistory = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
@@ -82,8 +62,39 @@ async function clearChatHistory(sender, type = null) {
   }
 }
 
+async function mergeChatHistories(fromId, toId, type = 'text') {
+  try {
+    const chatHistory = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
+
+    if (!chatHistory[fromId]) {
+      // Already merged or never existed
+      console.log(`⚠️ No chat history to merge from ${fromId}`);
+      return;
+    }
+
+    // Ensure toId exists
+    if (!chatHistory[toId]) {
+      chatHistory[toId] = { text: [], voice: [] };
+    }
+
+    // Copy entries
+    const entriesToMove = chatHistory[fromId][type] || [];
+    chatHistory[toId][type] = chatHistory[toId][type].concat(entriesToMove);
+
+    // Delete temp (fromId) history
+    delete chatHistory[fromId];
+
+    fs.writeFileSync(dataFilePath, JSON.stringify(chatHistory, null, 2));
+    console.log(`✅ Merged chat history from ${fromId} to ${toId} (${type})`);
+  } catch (error) {
+    console.error('❌ Error merging chat histories:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   saveChatHistory,
   getChatHistory,
   clearChatHistory,
+  mergeChatHistories,
 };

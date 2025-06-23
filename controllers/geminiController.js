@@ -37,18 +37,35 @@ async function generateGeminiResponse(sender, prompt, voiceMode) {
 }
 
 async function getGeminiResponse(req, res) {
-  const { prompt, number } = req.query;
+  const { prompt } = req.query;
   const voiceMode = req.query.voiceMode === 'true';
-  let sender = number || `temp_${Math.random().toString(36).substring(2, 15)}`;
+  
+  let verifiedPhone = null;
+  let tempId = null;
+  let sender = null;
+
+  // Handle combined input from frontend
+  if (req.query.number?.includes('|')) {
+    [verifiedPhone, tempId] = req.query.number.split('|');
+    sender = verifiedPhone;
+  } else {
+    sender = req.query.number || `temp_${Math.random().toString(36).substring(2, 15)}`;
+  }
 
   try {
+    // If both phone and tempId exist and aren't already merged
+    if (verifiedPhone && tempId && verifiedPhone !== tempId) {
+      await historyService.mergeChatHistories(tempId, verifiedPhone, voiceMode ? 'voice' : 'text');
+    }
+
     const response = await generateGeminiResponse(sender, prompt, voiceMode);
-    res.json({response});
+    res.json({ response });
   } catch (error) {
     console.error('Error generating Gemini response:', error);
     res.status(500).send('Error generating response');
   }
 }
+
 
 async function postGeminiResponse(req, res) {
   const { prompt, number } = req.body;
