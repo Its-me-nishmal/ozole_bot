@@ -21,7 +21,7 @@ console.log(systemPrompt)
     // Save chat history
     await historyService.saveChatHistory(sender, prompt, response, voiceMode ? 'voice' : 'text');
 
-    return response;
+    return voiceMode ? cleanForTTS(response) : response;
   } catch (error) {
     console.error('Error generating Gemini response:', error);
     throw error;
@@ -85,6 +85,19 @@ console.log(text)
     console.error("Error extracting phone number:", error);
     res.status(500).send("Error processing request");
   }
+}
+
+function cleanForTTS(text) {
+  return text
+    // Remove emojis
+    .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\uFE0F)/g, '')
+    // Remove @ and # but keep the word
+    .replace(/[@#](\w+)/g, '$1')
+    // Remove *, _, ~ etc., but keep the word
+    .replace(/[*_~`]+/g, '')
+    // Remove extra spaces
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 
