@@ -46,7 +46,7 @@ async function detectConsultationIntent(prompt, sender) {
     }
 
     // Step 2: Prompt Gemini
-    const fullPrompt = `${config.consultationPrompt}\n\nConversation:\n ${prompt}`;
+    const fullPrompt = `${config.consultationPrompt}\n\nCurrent IST DateTime: ${nowIST.toFormat('yyyy-MM-dd HH:mm')}\n\nConversation:\n ${prompt}`;
     const rawResponse = await geminiAdapter.generateContent(fullPrompt);
     const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
