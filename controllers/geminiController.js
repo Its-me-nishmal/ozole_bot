@@ -1,6 +1,7 @@
 const geminiAdapter = require('../adapters/geminiAdapter');
 const config = require('../config/gemini');
 const historyService = require('../services/historyService');
+const { detectConsultationIntent } = require('../services/consultationService');
 
 async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
@@ -14,9 +15,17 @@ console.log(systemPrompt)
     let formattedHistory = chatHistory.map(item => `User: ${item.message}\nAI: ${item.response}`).join('\n');
 
     const fullPrompt = systemPrompt + '\\n' + formattedHistory + '\\nUser: ' + prompt;
-    const response = await geminiAdapter.generateContent(fullPrompt);
 
-    console.log(response)
+     const consultation = await detectConsultationIntent(fullPrompt);
+    if (consultation) {
+      console.log("📅 Consultation Detected:", consultation);
+
+      // Optional: Send notification/email/store to DB
+      // await emailService.sendConsultationEmail('admin@example.com', sender, consultation.date, consultation.time);
+    }
+
+
+    const response = await geminiAdapter.generateContent(fullPrompt);
 
     // Save chat history
     await historyService.saveChatHistory(sender, prompt, response, voiceMode ? 'voice' : 'text');
