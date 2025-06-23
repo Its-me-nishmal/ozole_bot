@@ -6,7 +6,6 @@ const { detectConsultationIntent } = require('../services/consultationService');
 async function generateGeminiResponse(sender, prompt, voiceMode) {
   try {
  const systemPrompt = voiceMode ? config.voicePrompt : config.systemPrompt;
-console.log(systemPrompt)
     let chatHistory = await historyService.getChatHistory(sender, voiceMode ? 'voice' : 'text');
 
    

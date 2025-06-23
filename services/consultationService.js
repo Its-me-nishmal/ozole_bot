@@ -8,6 +8,7 @@ async function detectConsultationIntent(prompt) {
  
 
     const rawResponse = await geminiAdapter.generateContent(prompt);
+    console.log(rawResponse)
     const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
     const result = JSON.parse(cleaned);
