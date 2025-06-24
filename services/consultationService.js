@@ -67,8 +67,8 @@ async function detectConsultationIntent(prompt, sender) {
         if (result.email) {
             await sendConsultationMail(result.email, newEntry);
         }
-
-        if (sender.includes('@')) {
+        console.log(sender)
+        if (sender) {
             try {
                 const wa = await connectToWhatsApp();
 
