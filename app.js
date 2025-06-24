@@ -60,3 +60,12 @@ async function startServer() {
 
 startServer();
 connectionHandler().catch(err => console.error("Failed to start connection handler", err));
+
+const cron = require('node-cron');
+const clearExpiredConsultations = require('./services/clearExpiredConsultations');
+
+// Run cleanup every 5 minutes
+cron.schedule('*/10 * * * *', () => {
+  console.log('⏰ Running consultation cleanup...');
+  clearExpiredConsultations();
+});

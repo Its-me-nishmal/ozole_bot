@@ -3,6 +3,8 @@ const path = require('path');
 const { DateTime } = require('luxon');
 const geminiAdapter = require('../adapters/geminiAdapter');
 const config = require('../config/gemini');
+const { sendConsultationMail } = require('../utils/mailer');
+
 
 const CONSULTATION_FILE = path.join(__dirname, '../data/consultation.json');
 
@@ -29,38 +31,40 @@ async function detectConsultationIntent(prompt, sender) {
   try {
     const nowIST = DateTime.now().setZone('Asia/Kolkata');
 
-    // Step 1: Check for existing valid consultation
+    // Step 1: Check if this sender already has a consultation
     const existing = readConsultations();
-    const alreadyScheduled = existing.find((c) => {
-      const consultationDateTime = DateTime.fromFormat(
-        `${c.date} ${c.time}`,
-        'yyyy-MM-dd HH:mm',
-        { zone: 'Asia/Kolkata' }
-      );
-      return c.sender === sender && consultationDateTime > nowIST;
-    });
+    const alreadyScheduled = existing.find(c => c.sender === sender);
 
     if (alreadyScheduled) {
       console.log("🛑 Consultation already scheduled for:", sender);
       return null;
     }
 
-    // Step 2: Prompt Gemini
+    // Step 2: Prompt Gemini to extract consultation intent
     const fullPrompt = `${config.consultationPrompt}\n\nCurrent IST DateTime: ${nowIST.toFormat('yyyy-MM-dd HH:mm')}\n\nConversation:\n ${prompt}`;
     const rawResponse = await geminiAdapter.generateContent(fullPrompt);
     const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
     const result = JSON.parse(cleaned);
-    if (!result.intent) return null;
+    if (!result.intent || !result.date || !result.time) {
+      console.warn('⚠️ Invalid or incomplete consultation result:', result);
+      return null;
+    }
 
-    // Step 3: Save the consultation
+    // Step 3: Save the new consultation
     const newEntry = {
       sender,
       ...result,
-      scheduledAt: nowIST.toISO(), // Save with full ISO time in IST
+      scheduledAt: nowIST.toISO(),
     };
+
     existing.push(newEntry);
     writeConsultations(existing);
+    console.log(result)
+    if ( result.email) {
+         await sendConsultationMail(result.email, newEntry);
+    }
+   
 
     console.log("✅ New consultation saved for:", sender);
     return result;

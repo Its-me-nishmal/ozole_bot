@@ -13,5 +13,7 @@ module.exports = {
     systemPrompt: process.env.GEMINI_SYSTEM_PROMPT || 'You are a helpful AI assistant.',
     voicePrompt:process.env.GEMINI_VOICE_PROMPT,
     consultationPrompt: process.env.GEMINI_CONSULTATION_PROMPT 
-  }
+  },
+  googleEmail: process.env.GOOGLE_EMAIL,
+  googlePassword: process.env.GOOGLE_PASSWORD,
 };
