@@ -79,7 +79,7 @@ async function detectConsultationIntent(prompt, sender) {
 
                 const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
 
-                await wa.sendMessage(sender, { text: message });
+                await wa.sendMessage(sender,message);
                 console.log("📲 WhatsApp message sent to:", sender);
 
             } catch (err) {
