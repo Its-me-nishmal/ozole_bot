@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const config = require('../config/gemini');
 
 const genAI = new GoogleGenerativeAI(config.detectKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "Gemini 2.5 Flash-Lite Preview 06-17" });
 
 async function generateContentForDetection(prompt) {
   try {
