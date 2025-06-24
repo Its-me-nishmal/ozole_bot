@@ -72,7 +72,13 @@ async function detectConsultationIntent(prompt, sender) {
             try {
                 const wa = await connectToWhatsApp();
 
+                if (!wa || !wa.sendMessage) {
+                    console.error('❌ WhatsApp client is not ready.');
+                    return result;
+                }
+
                 const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
+
                 await wa.sendMessage(sender, { text: message });
                 console.log("📲 WhatsApp message sent to:", sender);
 
@@ -80,6 +86,7 @@ async function detectConsultationIntent(prompt, sender) {
                 console.error("❌ Failed to send WhatsApp message:", err.message);
             }
         }
+
 
 
 
