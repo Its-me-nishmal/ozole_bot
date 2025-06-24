@@ -20,7 +20,7 @@ async function sendConsultationMail(to, consultation) {
       <p><strong>Sender:</strong> ${consultation.sender}</p>
       <p><strong>Date:</strong> ${consultation.date}</p>
       <p><strong>Time:</strong> ${consultation.time}</p>
-      <p><strong>Intent:</strong> ${consultation.intent}</p>
+      <p><strong>Intent:</strong> ${consultation.purpose}</p>
       <p><strong>Scheduled At:</strong> ${consultation.scheduledAt}</p>
     `
   };
