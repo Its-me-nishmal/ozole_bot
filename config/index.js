@@ -16,4 +16,5 @@ module.exports = {
   },
   googleEmail: process.env.GOOGLE_EMAIL,
   googlePassword: process.env.GOOGLE_PASSWORD,
+  detectKey: process.env.DETECT_KEY_GEMINI,
 };

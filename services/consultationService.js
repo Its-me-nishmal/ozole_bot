@@ -5,6 +5,7 @@ const geminiAdapter = require('../adapters/geminiAdapter');
 const config = require('../config/gemini');
 const { sendConsultationMail } = require('../utils/mailer');
 const { connectToWhatsApp } = require('../adapters/whatsappAdapter');
+const { generateContentForDetection } = require('../adapters/geminiAdapterForDetection');
 
 
 
@@ -44,7 +45,7 @@ async function detectConsultationIntent(prompt, sender) {
 
         // Step 2: Prompt Gemini to extract consultation intent
         const fullPrompt = `${config.consultationPrompt}\n\nCurrent IST DateTime: ${nowIST.toFormat('yyyy-MM-dd HH:mm')}\n\nConversation:\n ${prompt}`;
-        const rawResponse = await geminiAdapter.generateContent(fullPrompt);
+        const rawResponse = await generateContentForDetection.generateContentForDetection(fullPrompt);
         const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
         const result = JSON.parse(cleaned);
@@ -68,25 +69,31 @@ async function detectConsultationIntent(prompt, sender) {
         }
 
         if (sender.includes('@')) {
-            const wa = await connectToWhatsApp();
+            try {
+                const wa = await connectToWhatsApp();
 
-            wa.on('ready', async () => {
-                try {
-                    const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
-                    await wa.sendMessage(sender, { text: message });
-                    console.log("📲 WhatsApp message sent to:", sender);
-                } catch (err) {
-                    console.error("❌ Failed to send WhatsApp message:", err.message);
-                }
-            });
+                wa.on('ready', async () => {
+                    try {
+                        const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
+                        await wa.sendMessage(sender, { text: message });
+                        console.log("📲 WhatsApp message sent to:", sender);
+                    } catch (err) {
+                        console.error("❌ Failed to send WhatsApp message:", err.message);
+                    }
+                });
 
-            wa.on('auth_failure', (msg) => {
-                console.error("❌ WhatsApp auth failed:", msg);
-            });
+                wa.on('auth_failure', (msg) => {
+                    console.error("❌ WhatsApp auth failed:", msg);
+                });
 
-            wa.on('disconnected', (reason) => {
-                console.warn("⚠️ WhatsApp disconnected:", reason);
-            });
+                wa.on('disconnected', (reason) => {
+                    console.warn("⚠️ WhatsApp disconnected:", reason);
+                });
+
+            } catch (error) {
+                console.log(error)
+            }
+
         }
 
 

@@ -6,4 +6,5 @@ module.exports = {
   voicePrompt: config.gemini.voicePrompt,
   consultationPrompt: config.gemini.consultationPrompt,
   googleEmail: config.googleEmail,
+  detectKey: config.detectKey,
 };
