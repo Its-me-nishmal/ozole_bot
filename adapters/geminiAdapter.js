@@ -3,7 +3,7 @@ const config = require('../config/gemini');
 
 let key = config.apiKey
 const genAI = new GoogleGenerativeAI(config.apiKey);
-const model = genAI.getGenerativeModel({ model: "Gemini 2.5 Flash-Lite Preview 06-17" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite-preview-06-17" });
 
 async function generateContent(prompt) {
   try {
