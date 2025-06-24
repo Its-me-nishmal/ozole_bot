@@ -45,7 +45,7 @@ async function detectConsultationIntent(prompt, sender) {
 
         // Step 2: Prompt Gemini to extract consultation intent
         const fullPrompt = `${config.consultationPrompt}\n\nCurrent IST DateTime: ${nowIST.toFormat('yyyy-MM-dd HH:mm')}\n\nConversation:\n ${prompt}`;
-        const rawResponse = await generateContentForDetection.generateContentForDetection(fullPrompt);
+        const rawResponse = await generateContentForDetection(fullPrompt);
         const cleaned = rawResponse.replace(/```json|```/g, '').trim();
 
         const result = JSON.parse(cleaned);
