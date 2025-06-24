@@ -5,11 +5,16 @@ const ttsService = require('../services/ttsService');
 const { transcribeEncryptedAudio } = require('../services/sttService');
 const { MessageMedia } = require('whatsapp-web.js');
 
-// ... imports remain unchanged
+let listenerAttached = false; // Prevent duplicate listeners
 
 async function messageHandler() {
   try {
     const whatsappClient = await connectToWhatsApp();
+
+    if (listenerAttached) {
+      console.log('⚠️ Message listener already attached. Skipping...');
+      return;
+    }
 
     whatsappClient.on('message', async (message) => {
       const sender = message.from;
@@ -26,8 +31,12 @@ async function messageHandler() {
           const base64Audio = buffer.toString('base64');
           const voiceMedia = new MessageMedia('audio/mpeg', base64Audio, 'response.mp3');
 
-          await whatsappClient.sendMessage(sender, voiceMedia, {sendAudioAsVoice : true, sendSeen: true});
-          await historyService.saveChatHistory(sender, transcribedText, geminiResponse,'voice');
+          await whatsappClient.sendMessage(sender, voiceMedia, {
+            sendAudioAsVoice: true,
+            sendSeen: true,
+          });
+
+          await historyService.saveChatHistory(sender, transcribedText, geminiResponse, 'voice');
         } catch (err) {
           console.error('❌ Voice message processing error:', err);
           await whatsappClient.sendMessage(sender, '❌ Failed to process your voice message.');
@@ -47,7 +56,7 @@ async function messageHandler() {
         const geminiResponse = await geminiService.generateResponse(sender, incomingText, 'text');
         console.log('🔮 Gemini Response:', geminiResponse);
 
-        await whatsappClient.sendMessage(sender, geminiResponse); // send directly
+        await whatsappClient.sendMessage(sender, geminiResponse);
         await historyService.saveChatHistory(sender, incomingText, geminiResponse, 'text');
       } catch (error) {
         console.error('❌ Text handling error:', error);
@@ -55,10 +64,12 @@ async function messageHandler() {
       }
     });
 
+    listenerAttached = true;
+    console.log('📩 Message listener attached to WhatsApp client.');
+
   } catch (error) {
     console.error('❌ Error initializing WhatsApp client:', error);
   }
 }
 
 messageHandler();
-
