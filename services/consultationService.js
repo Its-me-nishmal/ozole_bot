@@ -72,29 +72,15 @@ async function detectConsultationIntent(prompt, sender) {
             try {
                 const wa = await connectToWhatsApp();
 
-                wa.on('ready', async () => {
-                    try {
-                        const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
-                        await wa.sendMessage(sender, { text: message });
-                        console.log("📲 WhatsApp message sent to:", sender);
-                    } catch (err) {
-                        console.error("❌ Failed to send WhatsApp message:", err.message);
-                    }
-                });
+                const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${result.date}\n⏰ Time: ${result.time}\n\nThank you!`;
+                await wa.sendMessage(sender, { text: message });
+                console.log("📲 WhatsApp message sent to:", sender);
 
-                wa.on('auth_failure', (msg) => {
-                    console.error("❌ WhatsApp auth failed:", msg);
-                });
-
-                wa.on('disconnected', (reason) => {
-                    console.warn("⚠️ WhatsApp disconnected:", reason);
-                });
-
-            } catch (error) {
-                console.log(error)
+            } catch (err) {
+                console.error("❌ Failed to send WhatsApp message:", err.message);
             }
-
         }
+
 
 
         console.log("✅ New consultation saved for:", sender);

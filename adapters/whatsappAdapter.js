@@ -1,33 +1,55 @@
+// whatsappAdapter.js
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
-const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: {
-        headless: true,
-        // executablePath: '/snap/bin/chromium',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }
-});
+let client = null;
+let initialized = false;
 
-console.log('here...')
+function setupListeners(client) {
+    client.on('qr', qr => {
+        console.log('📷 Scan this QR code to login:');
+        qrcode.generate(qr, { small: true });
+    });
 
-client.on('qr', qr => {
-    console.log('gene')
-    qrcode.generate(qr, {small: true});
-});
+    client.on('ready', () => {
+        console.log('✅ WhatsApp client is ready!');
+    });
 
-client.on('ready', () => {
-    console.log('Client is ready!');
-});
+    client.on('auth_failure', msg => {
+        console.error('❌ Auth failed:', msg);
+    });
 
-// client.on('message_create', (msg) => {
-//   console.log(msg)
-// })
+    client.on('disconnected', reason => {
+        console.warn('⚠️ WhatsApp disconnected:', reason);
+        initialized = false;
+    });
+}
 
 async function connectToWhatsApp() {
-    client.initialize();
+    if (initialized && client) {
+        return client;
+    }
+
+    client = new Client({
+        authStrategy: new LocalAuth(),
+        puppeteer: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        },
+    });
+
+    setupListeners(client);
+
+    try {
+        await client.initialize();
+        initialized = true;
+    } catch (err) {
+        console.error('❌ WhatsApp initialization failed:', err.message);
+    }
+
     return client;
 }
 
 module.exports = { connectToWhatsApp };
+
+connectToWhatsApp();
