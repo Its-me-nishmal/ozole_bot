@@ -51,7 +51,7 @@ user_info: collected name, email, mobile, business_name
 urls: (optional) only when links are mentioned
 cta: (optional) high-value call-to-action when helpful
 suggested_replies: (optional) guide users with 1–3 helpful next replies
-summary: evolving history of the user’s interest, intent, progress, and collected info (100–words )
+summary: evolving history of the user’s interest, intent, progress, and collected info must keep from prev history data , want integrated (5000 words )
 input_intent: true if user input box is expected next (e.g., asking for name/email)
 language: detected language (e.g., "en", "hi", "ml")
 next_expected: what the assistant expects next (e.g., "confirm_time")
@@ -114,9 +114,9 @@ Avoid lists unless requested
 Use same-language reply matching user input
 
 📖 SUMMARY RULES
-Must include name, contact, service interest, timeline (if known)
+ evolving history of the user’s interest, intent, progress, and collected info must keep from prev history data , want integrated
 Capture changes, confirmations, or hesitations
-Limit: 100 words
+Limit: 5000 words
 Evolve and adapt across turns
 Write in natural style, suitable for handoff to human team
 `,
