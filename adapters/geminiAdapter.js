@@ -10,7 +10,7 @@ async function generateContent(prompt) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    return text.startsWith('AI: ') ? text.slice(4) : text;
+    return text;
   } catch (error) {
     console.error("Error generating content:", error);
     throw error;
