@@ -99,6 +99,78 @@ async function detectConsultationIntent(prompt, sender) {
     }
 }
 
+async function processAndScheduleConsultation(sender, consultationInfo, email = null, mobile = null) {
+  try {
+    if (!consultationInfo || !consultationInfo.date || !consultationInfo.time) {
+      return { success: false, message: "Missing required consultation info (date/time)." };
+    }
+
+    // const allConsultations = readConsultations();
+    // const nowIST = DateTime.now().setZone('Asia/Kolkata');
+
+    // const existing = allConsultations.find(c => c.sender === sender);
+    // if (existing) {
+    //   return {
+    //     success: false,
+    //     message: "User already has a scheduled consultation.",
+    //     details: existing
+    //   };
+    // }
+
+    // const newEntry = {
+    //   sender,
+    //   email,
+    //   mobile,
+    //   ...consultationInfo,
+    //   scheduledAt: nowIST.toISO()
+    // };
+
+    // allConsultations.push(newEntry);
+    // writeConsultations(allConsultations);
+    // console.log("✅ Scheduled consultation for:", sender);
+
+    // Send confirmation email if email exists
+    if (email) {
+      try {
+        await sendConsultationMail(email, newEntry);
+        console.log("📧 Email sent to:", email);
+      } catch (err) {
+        console.warn("⚠️ Failed to send consultation email:", err.message);
+      }
+    }
+
+    // Send WhatsApp message if sender is present
+    if (sender) {
+      try {
+        const wa = await connectToWhatsApp();
+
+        if (!wa?.sendMessage) {
+          console.warn("⚠️ WhatsApp client not available.");
+        } else {
+          const message = `🗓️ *Consultation Scheduled*\n\n📅 Date: ${consultationInfo.date}\n⏰ Time: ${consultationInfo.time}\n\nThank you!`;
+          await wa.sendMessage(sender, message);
+          console.log("📲 WhatsApp message sent to:", sender);
+        }
+      } catch (waErr) {
+        console.error("❌ WhatsApp message failed:", waErr.message);
+      }
+    }
+
+    return {
+      success: true,
+      message: "Consultation successfully scheduled.",
+      details: newEntry
+    };
+  } catch (err) {
+    console.error("❌ processAndScheduleConsultation failed:", err.message);
+    return {
+      success: false,
+      message: "Internal error while scheduling consultation."
+    };
+  }
+}
+
 module.exports = {
     detectConsultationIntent,
+    processAndScheduleConsultation
 };
