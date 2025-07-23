@@ -1,23 +1,15 @@
-2025/07/15-13:51:50.209 4fc0 Reusing MANIFEST C:\Time Pass\ozole_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/07/15-13:51:50.210 4fc0 Recovering log #131
-2025/07/15-13:51:50.340 4fc0 Reusing old log C:\Time Pass\ozole_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000131.log 
-2025/07/15-13:51:50.341 4fc0 Delete type=2 #51
-2025/07/15-13:51:50.341 4fc0 Delete type=2 #133
-2025/07/15-13:51:55.218 4df8 Level-0 table #138: started
-2025/07/15-13:51:55.270 4df8 Level-0 table #138: 364249 bytes OK
-2025/07/15-13:51:55.275 4df8 Delete type=0 #131
-2025/07/15-13:51:55.276 4df8 Manual compaction at level-0 from '\x001\x00\x00\x00' @ 72057594037927935 : 1 .. '\x002\x00\x00\x00' @ 0 : 0; will stop at '\x001\x00\x00\x05' @ 326577 : 1
-2025/07/15-13:51:55.277 4df8 Compacting 1@0 + 1@1 files
-2025/07/15-13:51:55.372 4df8 Generated table #139@0: 27873 keys, 1129773 bytes
-2025/07/15-13:51:55.374 4df8 Compacted 1@0 + 1@1 files => 1129773 bytes
-2025/07/15-13:51:55.378 4df8 compacted to: files[ 0 1 1 0 0 0 0 ]
-2025/07/15-13:51:55.378 4df8 Delete type=2 #138
-2025/07/15-13:51:55.379 4c48 Manual compaction at level-0 from '\x001\x00\x00\x05' @ 326577 : 1 .. '\x002\x00\x00\x00' @ 0 : 0; will stop at (end)
-2025/07/15-13:51:58.186 4c48 Compacting 1@1 + 1@2 files
-2025/07/15-13:51:58.341 4c48 Generated table #140@1: 44520 keys, 2202469 bytes
-2025/07/15-13:51:58.366 4c48 Generated table #141@1: 10498 keys, 370063 bytes
-2025/07/15-13:51:58.366 4c48 Compacted 1@1 + 1@2 files => 2572532 bytes
-2025/07/15-13:51:58.368 4c48 compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/07/15-13:51:58.368 4c48 Delete type=2 #134
-2025/07/15-13:51:58.368 4c48 Delete type=2 #135
-2025/07/15-13:51:58.368 4c48 Delete type=2 #139
+2025/07/15-15:49:09.378 4e30 Reusing MANIFEST C:\Time Pass\ozole_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/15-15:49:09.378 4e30 Recovering log #148
+2025/07/15-15:49:09.510 4e30 Reusing old log C:\Time Pass\ozole_bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000148.log 
+2025/07/15-15:49:11.906 1cf8 Level-0 table #154: started
+2025/07/15-15:49:11.961 1cf8 Level-0 table #154: 506146 bytes OK
+2025/07/15-15:49:11.966 1cf8 Delete type=0 #148
+2025/07/15-15:49:11.967 1cf8 Manual compaction at level-0 from '\x004\x00\x00\x00' @ 72057594037927935 : 1 .. '\x005\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/07/15-15:49:17.075 b1c Compacting 1@1 + 2@2 files
+2025/07/15-15:49:17.440 b1c Generated table #155@1: 49770 keys, 2213310 bytes
+2025/07/15-15:49:17.517 b1c Generated table #156@1: 13705 keys, 615539 bytes
+2025/07/15-15:49:17.517 b1c Compacted 1@1 + 2@2 files => 2828849 bytes
+2025/07/15-15:49:17.521 b1c compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/07/15-15:49:17.522 b1c Delete type=2 #150
+2025/07/15-15:49:17.522 b1c Delete type=2 #151
+2025/07/15-15:49:17.522 b1c Delete type=2 #154
